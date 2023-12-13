@@ -22,21 +22,23 @@ public class BinaryNode<T>
     {
         RightChild = new BinaryNode<T>(rightValue);
     }
-    
+
     // Return a string representation of the node and its children.
     public override string ToString()
     {
-        string result = string.Format("{0}:", NodeValue);
+        return ToString("");
+    }
 
-        if (LeftChild == null)
-            result += NullString;
-        else
-            result += " " + LeftChild.NodeValue;
+    public string ToString(string spaces)
+    {
+        string result = $"{spaces}{NodeValue}:";
+        spaces += " ";
 
-        if (RightChild == null)
-            result += NullString;
-        else
-            result += " " + RightChild.NodeValue;
+        if (LeftChild is not null || RightChild is not null)
+        {
+            result += (LeftChild != null) ? "\n" + LeftChild.ToString(spaces) : $"\n{spaces}None";
+            result += (RightChild != null) ? "\n" + RightChild.ToString(spaces) : $"\n{spaces}None";
+        }
 
         return result;
     }

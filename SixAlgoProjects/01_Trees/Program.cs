@@ -1,9 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
-
-
 using _01_Trees;
 
 RunNaryTree();
+//RunBinaryTree();
 
 static void RunBinaryTree()
 {
@@ -21,8 +20,9 @@ static void RunBinaryTree()
     var eNode = bNode.RightChild;
     eNode?.AddLeft("F");
 
-    Console.WriteLine("------------ Breadth-First -------------");
-    rootNode.TraverseDepthFirst();
+    //Console.WriteLine("------------ Breadth-First -------------");
+    //rootNode.TraverseDepthFirst();
+    Console.WriteLine(rootNode.ToString());
 }
 
 static void RunNaryTree()
@@ -48,7 +48,7 @@ static void RunNaryTree()
     fNode.AddChild("H");
     fNode.AddChild("I");
     
-    Console.WriteLine("------------ Breadth-First -------------");
-    rootNaryNode.TraverseDepthFirst();
-
+    // Console.WriteLine("------------ Breadth-First -------------");
+    // rootNaryNode.TraverseDepthFirst();
+    Console.WriteLine(rootNaryNode.ToString());
 }

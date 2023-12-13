@@ -19,11 +19,17 @@ public class NaryNode<T>
     
     public override string ToString()
     {
-        string result = string.Format("{0}:", NodeValue);
+        return ToString("");
+    }
+
+    public string ToString(string spaces)
+    {
+        string result = $"{spaces}{NodeValue}:";
+        spaces += " ";
 
         foreach (var node in Children)
         {
-            result += " " + node.NodeValue;
+            result += "\n" + node.ToString(spaces);
         }
 
         return result;
