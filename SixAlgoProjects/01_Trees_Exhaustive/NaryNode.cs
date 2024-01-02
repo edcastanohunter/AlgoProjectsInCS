@@ -59,13 +59,57 @@ public static class NaryNodeExtensions
         return exisInChildren;
     }
     
-    public static void TraverseDepthFirst<T>(this NaryNode<T> root)
+    public static IEnumerable<NaryNode<T>> TraversePreOrder<T>(this NaryNode<T> node)
+    {
+        var list = new List<NaryNode<T>>();
+        list.Add(node);
+
+        foreach (var child in node.Children)
+        {
+            list.AddRange(child.TraversePreOrder());
+        }
+
+        return list;
+    }
+
+    // public static IEnumerable<BinaryNode<T>> TraverseInOrder<T>(this BinaryNode<T> node)
+    // {
+    //     var list = new List<BinaryNode<T>>();
+    //     
+    //     if (node.LeftChild != null)
+    //     {
+    //         list.AddRange(node.LeftChild.TraverseInOrder());
+    //     }
+    //     list.Add(node);
+    //     if (node.RightChild != null)
+    //     {
+    //         list.AddRange( node.RightChild.TraverseInOrder());
+    //     }
+    //
+    //     return list;
+    // }
+
+    public static IEnumerable<NaryNode<T>> TraversePostOrder<T>(this NaryNode<T> node)
+    {
+        var list = new List<NaryNode<T>>();
+
+        foreach (var child in node.Children)
+        {
+            list.AddRange(child.TraversePostOrder());
+        }
+
+        list.Add(node);
+
+        return list;
+    }
+    public static IEnumerable<NaryNode<T>> TraverseDepthFirst<T>(this NaryNode<T> root)
     {
         // Create a queue to hold children for later processing.
         Queue<NaryNode<T>> children = new Queue<NaryNode<T>>();
 
         // Place the root node on the queue.
         children.Enqueue(root);
+        var list = new List<NaryNode<T>>();
 
         while (children.Any())
         {
@@ -79,7 +123,9 @@ public static class NaryNodeExtensions
             }
 
             //Console.WriteLine($"{node.NodeValue}: {leftValue} {rightValue}");
-            Console.WriteLine(node.ToString());
+            list.Add(node);
         }
+
+        return list;
     }
 }

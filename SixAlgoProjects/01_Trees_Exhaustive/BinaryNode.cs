@@ -42,8 +42,6 @@ public class BinaryNode<T>
 
         return result;
     }
-
-    
 }
 
 public static class BinaryNodeExtensions
@@ -62,57 +60,66 @@ public static class BinaryNodeExtensions
 
         return tree.LeftChild.FindValue(value) || tree.RightChild.FindValue(value);
     }
-    public static void TraversePreOrder<T>(this BinaryNode<T> node)
+    public static IEnumerable<BinaryNode<T>> TraversePreOrder<T>(this BinaryNode<T> node)
     {
-        Console.WriteLine(node.NodeValue);
+        var list = new List<BinaryNode<T>>();
+        list.Add(node);
         if (node.LeftChild != null)
         {
-            TraversePreOrder(node.LeftChild);
+            list.AddRange(node.LeftChild.TraversePreOrder());
         }
 
         if (node.RightChild != null)
         {
-            TraversePreOrder(node.RightChild);
+            list.AddRange(node.RightChild.TraversePreOrder());
         }
+
+        return list;
     }
 
-    public static void TraverseInOrder<T>(this BinaryNode<T> node)
+    public static IEnumerable<BinaryNode<T>> TraverseInOrder<T>(this BinaryNode<T> node)
     {
+        var list = new List<BinaryNode<T>>();
+        
         if (node.LeftChild != null)
         {
-            TraverseInOrder(node.LeftChild);
+            list.AddRange(node.LeftChild.TraverseInOrder());
         }
-
-        Console.WriteLine(node.NodeValue);
+        list.Add(node);
         if (node.RightChild != null)
         {
-            TraverseInOrder(node.RightChild);
+            list.AddRange( node.RightChild.TraverseInOrder());
         }
+
+        return list;
     }
 
-    public static void TraversePostOrder<T>(this BinaryNode<T> node)
+    public static IEnumerable<BinaryNode<T>> TraversePostOrder<T>(this BinaryNode<T> node)
     {
+        var list = new List<BinaryNode<T>>();
         if (node.LeftChild != null)
         {
-            TraversePostOrder(node.LeftChild);
+            list.AddRange(node.LeftChild.TraversePostOrder());
         }
 
         if (node.RightChild != null)
         {
-            TraversePostOrder(node.RightChild);
+            list.AddRange(node.RightChild.TraversePostOrder());
         }
 
-        Console.WriteLine(node.NodeValue);
+        list.Add(node);
+
+        return list;
     }
 
-    public static void TraverseDepthFirst<T>(this BinaryNode<T> root)
+    public static IEnumerable<BinaryNode<T>> TraverseDepthFirst<T>(this BinaryNode<T> root)
     {
         // Create a queue to hold children for later processing.
         Queue<BinaryNode<T>> children = new Queue<BinaryNode<T>>();
 
         // Place the root node on the queue.
         children.Enqueue(root);
-
+        var list = new List<BinaryNode<T>>();
         while (children.Any())
         {
             // Get the next node in the queue.
@@ -130,7 +137,101 @@ public static class BinaryNodeExtensions
             }
 
             //Console.WriteLine($"{node.NodeValue}: {leftValue} {rightValue}");
-            Console.WriteLine(node.ToString());
+            list.Add(node);
         }
+
+        return list;
+    }
+
+    /// <summary>
+    /// Add a node to this node's sorted subtree.
+    /// </summary>
+    /// <param name="value"></param>
+    public static bool AddNode<T>(this BinaryNode<T> node, T value)
+    {
+        // this need to be improve since int hash is not deterministic
+        if (value.GetHashCode() < node.NodeValue.GetHashCode()) 
+        {
+            if (node.LeftChild is null)
+            {
+                node.LeftChild = new BinaryNode<T>(value);
+                return true;
+            }
+            
+            return node.LeftChild.AddNode(value);
+            
+        }
+        else
+        {
+            if (node.RightChild is null)
+            {
+                node.RightChild = new BinaryNode<T>(value);
+                return true;
+            }
+            
+            return node.RightChild.AddNode(value);
+            
+        }
+    }
+    
+    /// <summary>
+    /// Find a node 
+    /// </summary>
+    /// <param name="node">the node</param>
+    /// <param name="value"></param>
+    /// <typeparam name="T">Node's value type</typeparam>
+    /// <returns></returns>
+    public static BinaryNode<T> FindNode<T>(this BinaryNode<T> node, T value)
+    {
+        // this need to be improve since int hash is not deterministic
+        if (EqualityComparer<T>.Default.Equals(value , node.NodeValue)) 
+        {
+            return node;
+        }
+        
+        
+        if (value.GetHashCode() < node.NodeValue.GetHashCode()) 
+        {
+            if (node.LeftChild is null)
+            {
+                return null;
+            }
+            
+            return node.LeftChild.FindNode(value);
+            
+        }
+        else
+        {
+            if (node.RightChild is null)
+            {
+                return null;
+            }
+            return node.RightChild.FindNode(value);
+            
+        }
+    }
+
+    /// <summary>
+    /// Find the LCA for the two nodes.
+    /// </summary>
+    /// <param name="node"></param>
+    /// <param name="value1"></param>
+    /// <param name="value2"></param>
+    /// <returns></returns>
+    public static BinaryNode<int> FindLcaSortedTress(this BinaryNode<int> node, int value1, int value2)
+    {
+        // See if both nodes belong down the same child branch.
+        if (value1 < node.NodeValue && value2 < node.NodeValue)
+        {
+            return node.LeftChild.FindLcaSortedTress(value1, value2);
+        }
+
+        if (value1 > node.NodeValue && value2 > node.NodeValue)
+        {
+            return node.RightChild.FindLcaSortedTress(value1, value2);
+        }
+
+        // This is the LCA.
+        return node;
     }
 }
