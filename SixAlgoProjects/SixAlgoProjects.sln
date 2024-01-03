@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01_Trees_BT_Drawing", "01_T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01_Trees_NT_Drawing", "01_Trees_NT_Drawing\01_Trees_NT_Drawing.csproj", "{B3ADA7F3-B2EE-4E84-88B6-E5CF5B390B70}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01_Trees_OrgChart", "01_Trees_OrgChart\01_Trees_OrgChart.csproj", "{11834771-B6A2-4C39-8804-3FDF5B02B952}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{B3ADA7F3-B2EE-4E84-88B6-E5CF5B390B70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3ADA7F3-B2EE-4E84-88B6-E5CF5B390B70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3ADA7F3-B2EE-4E84-88B6-E5CF5B390B70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11834771-B6A2-4C39-8804-3FDF5B02B952}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11834771-B6A2-4C39-8804-3FDF5B02B952}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11834771-B6A2-4C39-8804-3FDF5B02B952}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11834771-B6A2-4C39-8804-3FDF5B02B952}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
