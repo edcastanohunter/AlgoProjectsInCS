@@ -87,23 +87,23 @@ namespace _01_Trees_OrgChart
 
                 sales.AddChild(inside_sales);
                 sales.AddChild(outside_sales);
-                // sales.AddChild(b2b);
-                // sales.AddChild(consumer);
-                // sales.AddChild(account_management);
+                sales.AddChild(b2b);
+                sales.AddChild(consumer);
+                sales.AddChild(account_management);
                 //
-                // hr.AddChild(training);
-                // hr.AddChild(hiring);
-                // hr.AddChild(equity);
-                // hr.AddChild(discipline);
-                //
-                // accounting.AddChild(payroll);
-                // accounting.AddChild(billing);
-                // accounting.AddChild(reporting);
-                // accounting.AddChild(opacity);
-                //
-                // legal.AddChild(compliance);
-                // legal.AddChild(progress_prevention);
-                // legal.AddChild(bail_services);
+                hr.AddChild(training);
+                hr.AddChild(hiring);
+                hr.AddChild(equity);
+                hr.AddChild(discipline);
+                
+                accounting.AddChild(payroll);
+                accounting.AddChild(billing);
+                accounting.AddChild(reporting);
+                accounting.AddChild(opacity);
+                
+                legal.AddChild(compliance);
+                legal.AddChild(progress_prevention);
+                legal.AddChild(bail_services);
             }
             return generi_gloop;
         }

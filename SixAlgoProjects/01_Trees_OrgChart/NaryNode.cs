@@ -145,28 +145,41 @@ internal class NaryNode<T>
             // start position for child subtrees.
             double child_xmin = xmin;
             double child_ymin = ymin + 2 * BOX_HALF_HEIGHT + Y_SPACING;
-
             // Set ymax equal to the largest Y position used.
             double ymax = ymin + 2 * BOX_HALF_HEIGHT;
 
-            // Position the child subtrees.
-            foreach (NaryNode<T> child in Children)
+            if (IsTwig())
             {
+                child_xmin +=  2 * X_SPACING;
+            }
+            
+            // Position the child subtrees.
+            foreach (var item in Children.Select((value, i) => ( value, i )))
+            {
+                var child = item.value;
+                var index = item.i + 1;
+                
+                child_ymin = (IsTwig() && child.IsLeaf()) ? ymin + (2 * BOX_HALF_HEIGHT  + Y_SPACING) * index : child_ymin;
                 // Position this child subtree.
                 child.ArrangeSubtree(child_xmin, child_ymin);
 
                 // Update child_xmin to allow room for the subtree
                 // and space between the subtrees.
-                child_xmin = child.SubtreeBounds.Right + X_SPACING;
+                child_xmin = (IsTwig() && child.IsLeaf()) ? child_xmin : child.SubtreeBounds.Right + X_SPACING;
 
                 // Update the subtree bottom ymax.
                 if (ymax < child.SubtreeBounds.Bottom)
                     ymax = child.SubtreeBounds.Bottom;
             }
-
+            
+            // if (IsTwig())
+            // {
+            //     child_xmin = baseX;
+            //     child_ymin = baseY;
+            // }
             // Set xmax equal to child_xmin minus the horizontal
             // spacing we added after the last subtree.
-            double xmax = child_xmin - X_SPACING;
+            double xmax = child_xmin + (IsLeaf() ? X_SPACING : 3 * X_SPACING);
 
             // Use xmin, ymin, xmax, and ymax to set our subtree bounds.
             SubtreeBounds = new Rect(xmin, ymin, xmax - xmin, ymax - ymin);
@@ -189,30 +202,56 @@ internal class NaryNode<T>
             }
             else if (Children.Count > 0)
             {
+                double ymid = 0d;
                 // Else if we have more than one child,
                 // draw vertical and horizontal branches.
+                if (IsTwig())
+                {
+                    ymid = Center.Y;
+                    
+                    // Draw the vertical center line over the children.
+                    int last_child = Children.Count - 1;
+                    var verticalX = Center.X - X_SPACING;
+                    canvas.DrawLine(
+                        new Point(verticalX, ymid),
+                        new Point(verticalX, Children[last_child].Center.Y),
+                        Brushes.Green, 1);
+                }
+                else
+                {
+                    // Find the Y coordinate of the center
+                    // halfway to the children.
+                    ymid = (Center.Y + Children[0].Center.Y) / 2;
 
-                // Find the Y coordinate of the center
-                // halfway to the children.
-                double ymid = (Center.Y + Children[0].Center.Y) / 2;
+                    // Draw the vertical line to the center line.
+                    canvas.DrawLine(Center, new Point(Center.X, ymid), Brushes.Green, 1);
 
-                // Draw the vertical line to the center line.
-                canvas.DrawLine(Center, new Point(Center.X, ymid), Brushes.Green, 1);
-
-                // Draw the horizontal center line over the children.
-                int last_child = Children.Count - 1;
-                canvas.DrawLine(
-                    new Point(Children[0].Center.X, ymid),
-                    new Point(Children[last_child].Center.X, ymid),
-                    Brushes.Green, 1);
+                    // Draw the horizontal center line over the children.
+                    int last_child = Children.Count - 1;
+                    canvas.DrawLine(
+                        new Point(Children[0].Center.X, ymid),
+                        new Point(Children[last_child].Center.X, ymid),
+                        Brushes.Green, 1);
+                }
+                
 
                 // Draw lines from the center line to the children.
                 foreach (NaryNode<T> child in Children)
                 {
-                    canvas.DrawLine(
-                        new Point(child.Center.X, ymid),
-                        new Point(child.Center.X, child.Center.Y),
-                        Brushes.Green, 1);
+                    if (IsTwig() && child.IsLeaf())
+                    {
+                        canvas.DrawLine(
+                            new Point(child.Center.X - 2.5 * X_SPACING, child.Center.Y),
+                            new Point(child.Center.X, child.Center.Y),
+                            Brushes.Green, 1);
+                    }
+                    else
+                    {
+                        canvas.DrawLine(
+                            new Point(child.Center.X, ymid),
+                            new Point(child.Center.X, child.Center.Y),
+                            Brushes.Green, 1);
+                    }
                 }
 
                 // Recursively draw child subtree links.
@@ -223,7 +262,7 @@ internal class NaryNode<T>
             }
 
             // Outline the subtree for debugging.
-            //canvas.DrawRectangle(SubtreeBounds, null, Brushes.Red, 1);
+            // canvas.DrawRectangle(SubtreeBounds, null, Brushes.Red, 1);
         }
 
         // Draw the subtree's nodes.
@@ -235,7 +274,14 @@ internal class NaryNode<T>
             double x1 = Center.X + BOX_HALF_WIDTH;
             double y1 = Center.Y + BOX_HALF_HEIGHT;
             Rect rect = new Rect(x0, y0, x1 - x0, y1 - y0);
-            canvas.DrawRectangle(rect, Brushes.White, Brushes.Black, 1);
+            if (IsTwig() || (!IsTwig() && !IsLeaf()))
+            {
+                canvas.DrawRectangle(rect, Brushes.DarkSalmon, Brushes.Black, 1);
+            }
+            else
+            {
+                canvas.DrawRectangle(rect, Brushes.White, Brushes.Black, 1);
+            }
             Label label = canvas.DrawLabel(rect, Value, null, Brushes.Red,
                 HorizontalAlignment.Center,
                 VerticalAlignment.Center,
@@ -262,12 +308,12 @@ internal class NaryNode<T>
 
         public bool IsLeaf()
         {
-            return Children.Any();
+            return !Children.Any();
         }
 
         public bool IsTwig()
         {
-            var isTwig = true;
+            var isTwig = true && Children.Any();
             foreach (var child in Children)
             {
                 isTwig = isTwig && child.IsLeaf();
